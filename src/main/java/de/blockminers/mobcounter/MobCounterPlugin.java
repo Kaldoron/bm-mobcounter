@@ -81,57 +81,43 @@ public class MobCounterPlugin extends JavaPlugin {
             Player player = (Player) sender;
             Map<EntityType, Integer> mobCounts = new HashMap<>();
 
-            // Scannt alle Entitys im Umkreis von 128 Blöcken
-            for (Entity entity : player.getNearbyEntities(128, 128, 128)) {
+            // Den scan-radius aus der Konfiguration lesen
+            int radius = getConfig().getInt("scan-radius", 128);
+
+            // Scannt alle Entitys im konfigurierten Umkreis
+            for (Entity entity : player.getNearbyEntities(radius, radius, radius)) {
                 EntityType type = entity.getType();
                 mobCounts.put(type, mobCounts.getOrDefault(type, 0) + 1);
             }
 
-            player.sendMessage(ChatColor.GOLD + "[" + ChatColor.RED + "Mobcounter" + ChatColor.GOLD + "] " + ChatColor.GOLD + "Entitys in einem Radius von 128 Blöcken:");
+            // Jede Gruppe aus der Konfiguration durchgehen und Entitys entsprechend zuordnen
+            for (String groupKey : getConfig().getConfigurationSection("gruppen").getKeys(false)) {
+                // Name und Farbe der Gruppe aus der Konfiguration laden
+                String groupName = getConfig().getString("gruppen." + groupKey + ".name");
+                String colorCode = getConfig().getString("gruppen." + groupKey + ".color", "WHITE"); // Standardfarbe, falls nicht definiert
+                ChatColor color = ChatColor.valueOf(colorCode.toUpperCase()); // String in ChatColor umwandeln
 
-         // Listen für jede Gruppe vorbereiten
-            List<String> gruppe1 = new ArrayList<>();
-            List<String> gruppe2 = new ArrayList<>();
-            List<String> gruppe3 = new ArrayList<>();
+                List<String> entitiesList = getConfig().getStringList("gruppen." + groupKey + ".entities");
+                List<String> groupMessages = new ArrayList<>();
 
-            // Entities nach Gruppen sortieren und formatierte Einträge in die Listen hinzufügen
-            for (Map.Entry<EntityType, Integer> entry : mobCounts.entrySet()) {
-                EntityType type = entry.getKey();
-                int count = entry.getValue();
+                // Entity-Zahlen für die Gruppe sammeln
+                for (Map.Entry<EntityType, Integer> entry : mobCounts.entrySet()) {
+                    EntityType type = entry.getKey();
+                    int count = entry.getValue();
 
-                // Gruppe 1: Armorstands, Blockdisplays, Itemdisplays und Itemframes (Rot)
-                if (type == EntityType.ARMOR_STAND || type == EntityType.BLOCK_DISPLAY || 
-                    type == EntityType.ITEM_DISPLAY || type == EntityType.ITEM_FRAME) {
-                    gruppe1.add(ChatColor.RED + "- " + type.name() + ": " + count);
+                    if (entitiesList.contains(type.name())) {
+                        groupMessages.add(color + "- " + type.name() + ": " + count);
+                    }
                 }
-                // Gruppe 2: Tiere und Monster (Grün)
-                else if (type == EntityType.COW || type == EntityType.SHEEP || type == EntityType.PIG || 
-                         type == EntityType.CHICKEN || type == EntityType.ZOMBIE || type == EntityType.SKELETON || 
-                         type == EntityType.CREEPER || type == EntityType.SPIDER || type == EntityType.ENDERMAN) {
-                    gruppe2.add(ChatColor.GREEN + "- " + type.name() + ": " + count);
-                }
-                // Gruppe 3: Alle anderen Entitys (Gelb)
-                else {
-                    gruppe3.add(ChatColor.YELLOW + "- " + type.name() + ": " + count);
+
+                // Gruppennachricht ausgeben, wenn es Einträge gibt
+                if (!groupMessages.isEmpty()) {
+                    player.sendMessage(ChatColor.GOLD + groupName + ":");
+                    for (String entry : groupMessages) {
+                        player.sendMessage(entry);
+                    }
                 }
             }
-
-            // Ausgaben der Gruppen in der gewünschten Reihenfolge
-            player.sendMessage(ChatColor.GOLD + "Gruppe 1: Armorstands, Blockdisplays, Itemdisplays, Itemframes");
-            for (String entry : gruppe1) {
-                player.sendMessage(entry);
-            }
-
-            player.sendMessage(ChatColor.GOLD + "Gruppe 2: Tiere und Monster");
-            for (String entry : gruppe2) {
-                player.sendMessage(entry);
-            }
-
-            player.sendMessage(ChatColor.GOLD + "Gruppe 3: Andere Entitys");
-            for (String entry : gruppe3) {
-                player.sendMessage(entry);
-            }
-
 
             return true;
         }
