@@ -1,0 +1,41 @@
+# Konfigurationsdatei für das MobCounterPlugin
+
+# Der Radius, in dem Entitys um den Spieler herum gezählt werden sollen
+scan-radius: 128
+
+# Namen für die Gruppen
+gruppen:
+  gruppe1:
+    name: "Armorstands und Anzeigen"
+    color: "RED"
+    entities:
+      - ARMOR_STAND
+      - BLOCK_DISPLAY
+      - ITEM_DISPLAY
+      - ITEM_FRAME
+
+  gruppe2:
+    name: "Tiere und Monster"
+    color: "GREEN"
+    entities:
+      - COW
+      - SHEEP
+      - PIG
+      - CHICKEN
+      - ZOMBIE
+      - SKELETON
+      - CREEPER
+      - SPIDER
+      - ENDERMAN
+
+  gruppe3:
+    name: "Andere Entitys"
+    color: "YELLOW"
+    entities: []  # Optional: Hier könnten andere Entities hinzugefügt werden, die nicht zu den ersten beiden Gruppen gehören
+
+# Plugin-Nachrichten
+messages:
+  header: "&6[&cMobcounter&6] &eEntitys im Radius von {radius} Blöcken:"
+  gruppe1: "&6Gruppe 1: Armorstands und Anzeigen"
+  gruppe2: "&6Gruppe 2: Tiere und Monster"
+  gruppe3: "&6Gruppe 3: Andere Entitys"

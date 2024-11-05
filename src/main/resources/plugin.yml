@@ -1,0 +1,8 @@
+name: MobCounterPlugin
+main: de.blockminers.mobcounter.MobCounterPlugin
+version: 1.0
+api-version: 1.21.1
+commands:
+  mobs:
+    description: Zählt alle Mobs im Umkreis von 128 Blöcken
+    usage: /mobs
