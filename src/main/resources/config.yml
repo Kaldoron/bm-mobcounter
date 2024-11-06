@@ -1,11 +1,14 @@
-# Konfigurationsdatei für das MobCounterPlugin
-
-# Der Radius, in dem Entitys um den Spieler herum gezählt werden sollen
+# Configfile for MobCounterPlugin
+version: 1
+# Radius around the Players to check for Entitys
 scan-radius: 128
 
-# Namen für die Gruppen
-gruppen:
-  gruppe1:
+# Header, thats used by Groupoutput. Placeholder %radius% will be used to output scan-radius
+header: "Entitys im Scanbereich von %radius% Blöcken:"
+
+# Definition of Groups to Scan for and Chatouput
+group:
+  group1:
     name: "Armorstands und Anzeigen"
     color: "RED"
     entities:
@@ -14,7 +17,7 @@ gruppen:
       - ITEM_DISPLAY
       - ITEM_FRAME
 
-  gruppe2:
+  group2:
     name: "Tiere und Monster"
     color: "GREEN"
     entities:
@@ -28,14 +31,7 @@ gruppen:
       - SPIDER
       - ENDERMAN
 
-  gruppe3:
+  group3:
     name: "Andere Entitys"
     color: "YELLOW"
-    entities: []  # Optional: Hier könnten andere Entities hinzugefügt werden, die nicht zu den ersten beiden Gruppen gehören
-
-# Plugin-Nachrichten
-messages:
-  header: "&6[&cMobcounter&6] &eEntitys im Radius von {radius} Blöcken:"
-  gruppe1: "&6Gruppe 1: Armorstands und Anzeigen"
-  gruppe2: "&6Gruppe 2: Tiere und Monster"
-  gruppe3: "&6Gruppe 3: Andere Entitys"
+    entities: []  # Optional: Define other Entities here
