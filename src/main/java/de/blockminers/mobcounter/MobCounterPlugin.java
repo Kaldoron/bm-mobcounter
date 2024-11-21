@@ -23,7 +23,7 @@ public class MobCounterPlugin extends JavaPlugin {
     private FileConfiguration config;
     private File configFile;
 
-    private static final int CURRENT_CONFIG_VERSION = 2; // Update this as needed for your plugin
+    private static final int CURRENT_CONFIG_VERSION = 3; // Update this as needed for your plugin
 
     @Override
     public void onEnable() {
@@ -44,50 +44,29 @@ public class MobCounterPlugin extends JavaPlugin {
     public void createCustomConfig() {
         configFile = new File(getDataFolder(), "config.yml");
 
-        if (!configFile.exists()) {
-            configFile.getParentFile().mkdirs(); // Create the directory if it doesn't exist
-            saveResource("config.yml", false); // Copy the default config.yml from the plugin JAR
-        }
+        if (configFile.exists()) {
+            // Load the existing config to check the version
+            config = YamlConfiguration.loadConfiguration(configFile);
+            int existingConfigVersion = config.getInt("version", 0); // Default to 0 if version is not found
 
-        config = YamlConfiguration.loadConfiguration(configFile); // Load the config file
-    }
-
-    public void checkConfigVersion() {
-        int configVersion = getConfig().getInt("version", 0); // Default to 0 if not present
-
-        if (configVersion < CURRENT_CONFIG_VERSION) {
-            getLogger().warning("Config version " + configVersion +
-                    " is outdated. Updating to version " + CURRENT_CONFIG_VERSION + "...");
-            handleOutdatedConfig(); // Call your existing routine to handle outdated config
-            getConfig().set("version", CURRENT_CONFIG_VERSION); // Update version in config
-            saveConfig();
-        }
-    }
-
-    public void handleOutdatedConfig() {
-        // Example update logic: Add new config keys or values if they are missing
-        if (!getConfig().contains("no-entities-found")) {
-            getConfig().set("no-entities-found", "No Entities in %radius% Blocks could be found.");
-        }
-
-        // Add other update logic here if necessary...
-        getLogger().info("Config successfully updated.");
-    }
-
-    public FileConfiguration getConfig() {
-        if (config == null) {
-            createCustomConfig();
-        }
-        return config;
-    }
-
-    public void saveConfig() {
-        if (config == null || configFile == null) return;
-
-        try {
-            getConfig().save(configFile); // Save any changes back to config.yml
-        } catch (IOException e) {
-            getLogger().severe("Could not save config to " + configFile);
+            // Check if the existing config version is outdated
+            if (existingConfigVersion < CURRENT_CONFIG_VERSION) {
+                // Rename the old config file
+                File oldConfigFile = new File(getDataFolder(), "config_old.yml");
+                if (configFile.renameTo(oldConfigFile)) {
+                    getLogger().info("Old config.yml renamed to config_old.yml due to version mismatch.");
+                } else {
+                    getLogger().warning("Failed to rename old config.yml. Loading the old config instead.");
+                }
+                // Copy the new default config.yml from the plugin JAR
+                saveResource("config.yml", false);
+                config = YamlConfiguration.loadConfiguration(configFile); // Load the new config
+            }
+        } else {
+            // If no config exists, copy the default config.yml from the plugin JAR
+            configFile.getParentFile().mkdirs();
+            saveResource("config.yml", false);
+            config = YamlConfiguration.loadConfiguration(configFile); // Load the config file
         }
     }
 
@@ -98,6 +77,15 @@ public class MobCounterPlugin extends JavaPlugin {
         config = YamlConfiguration.loadConfiguration(configFile); // Reload config from file
     }
 
+    private void checkConfigVersion() {
+        int existingConfigVersion = config.getInt("version", 0); // Default to 0 if version is not found
+
+        if (existingConfigVersion < CURRENT_CONFIG_VERSION) {
+            // Logic to handle version mismatch (already done in createCustomConfig)
+            getLogger().info("Config file version is outdated, updating...");
+        }
+    }
+    
     private class ReloadCommandExecutor implements CommandExecutor {
         @Override
         public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
@@ -107,7 +95,6 @@ public class MobCounterPlugin extends JavaPlugin {
             }
 
             reloadConfig();
-            checkConfigVersion(); // Ensure the updated config version matches the current
             sender.sendMessage(ChatColor.GREEN + "Config successfully reloaded.");
             return true;
         }
@@ -125,7 +112,7 @@ public class MobCounterPlugin extends JavaPlugin {
             Map<EntityType, Integer> mobCounts = new HashMap<>();
 
             // Get scan-radius from Config
-            int maxRadius = getConfig().getInt("scan-radius", 128);
+            int maxRadius = config.getInt("scan-radius", 128);
             int radius = maxRadius; // Standardradius is max Radius
 
             // If Player gives Radius, validate
@@ -150,7 +137,7 @@ public class MobCounterPlugin extends JavaPlugin {
             
            // If no Entities have been found
             if (mobCounts.isEmpty()) {
-                String noEntitiesMessage = getConfig().getString("no-entities-found",
+                String noEntitiesMessage = config.getString("no-entities-found",
                         "No Entities in Radius of %radius%  Blocks could be found..")
                         .replace("%radius%", String.valueOf(radius));
                 player.sendMessage(ChatColor.RED + noEntitiesMessage);
@@ -158,19 +145,19 @@ public class MobCounterPlugin extends JavaPlugin {
             }
 
             // Show header from config with radius 
-            String rawHeaderMessage = getConfig().getString("header", "&6Entity-Counter in Radius of %radius% Blocks:");
+            String rawHeaderMessage = config.getString("header", "&6Entity-Counter in Radius of %radius% Blocks:");
             String formattedHeaderMessage = ChatColor.translateAlternateColorCodes('&', rawHeaderMessage.replace("%radius%", String.valueOf(radius)));
             player.sendMessage(formattedHeaderMessage); // Send formatted header message
             
             // Go through every Group within the List
-            for (String groupKey : getConfig().getConfigurationSection("groups").getKeys(false)) {
+            for (String groupKey : config.getConfigurationSection("groups").getKeys(false)) {
                 // Load Color and Name from Config
-                String groupName = getConfig().getString("groups." + groupKey + ".name");
-                String colorCode = getConfig().getString("groups." + groupKey + ".color", "&f"); // Standardcolor: Weiß (&f)
+                String groupName = config.getString("groups." + groupKey + ".name");
+                String colorCode = config.getString("groups." + groupKey + ".color", "&f"); // Standardcolor: Weiß (&f)
                 String translatedColorCode = ChatColor.translateAlternateColorCodes('&', colorCode); // Minecraft-Colorcodes translation
                 ChatColor color = ChatColor.valueOf(translatedColorCode.toUpperCase().replace("§", ""));
 
-                List<String> entitiesList = getConfig().getStringList("groups." + groupKey + ".entities");
+                List<String> entitiesList = config.getStringList("groups." + groupKey + ".entities");
                 
                 // Declare groupEntities inside the loop
                 List<Map.Entry<EntityType, Integer>> groupEntities = new ArrayList<>();
