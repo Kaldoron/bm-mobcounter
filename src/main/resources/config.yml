@@ -105,4 +105,9 @@ groups:
   group3:
     name: "Other Entitys"
     color: "YELLOW"
-    entities: []  # Optional
+    entities: 
+      - PAINTING
+      - MINECART
+      - CHEST_MINECART
+      - BOAT
+      - CHEST_BOAT
