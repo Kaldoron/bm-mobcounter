@@ -1,15 +1,15 @@
-# Konfigurationsdatei für das MobCounterPlugin
-
-# Der Radius, in dem Entitys um den Spieler herum gezählt werden sollen
+# Configfile for MobCounterPlugin
+version: 1
+# Max Scan Radius
 scan-radius: 128
 
-# Header, der vor den Gruppenausgaben angezeigt wird. Der Platzhalter %radius% wird durch den tatsächlichen Radius ersetzt
-header: "Entitys im Scanbereich von %radius% Blöcken:"
-
-# Definition der Gruppen
-gruppen:
-  gruppe1:
-    name: "Armorstands und Anzeigen"
+# Header, for Groups %radius% will be in there Minecraft Colorcodes can be used here
+header: "Entitys in Scanradius of %radius% Blocks:"
+no-entities-found: "No Entities in %radius% Blocks could be found."
+# Definition of Groups Minecraft Colorcodes can be used here
+groups:
+  group1:
+    name: "Armorstands and Displays"
     color: "RED"
     entities:
       - ARMOR_STAND
@@ -17,8 +17,8 @@ gruppen:
       - ITEM_DISPLAY
       - ITEM_FRAME
 
-  gruppe2:
-    name: "Tiere und Monster"
+  group2:
+    name: "Animals and Monsters"
     color: "GREEN"
     entities:
       - ALLAY
@@ -102,7 +102,7 @@ gruppen:
       - ZOMBIFIED_PIGLIN
 
 
-  gruppe3:
-    name: "Andere Entitys"
+  group3:
+    name: "Other Entitys"
     color: "YELLOW"
-    entities: []  # Optional: Hier können andere Entities hinzugefügt werden, die nicht zu den ersten beiden Gruppen gehören
+    entities: []  # Optional
