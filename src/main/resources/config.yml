@@ -1,14 +1,14 @@
-# Configfile for MobCounterPlugin
-version: 1
-# Radius around the Players to check for Entitys
+# Konfigurationsdatei für das MobCounterPlugin
+
+# Der Radius, in dem Entitys um den Spieler herum gezählt werden sollen
 scan-radius: 128
 
-# Header, thats used by Groupoutput. Placeholder %radius% will be used to output scan-radius
+# Header, der vor den Gruppenausgaben angezeigt wird. Der Platzhalter %radius% wird durch den tatsächlichen Radius ersetzt
 header: "Entitys im Scanbereich von %radius% Blöcken:"
 
-# Definition of Groups to Scan for and Chatouput
-group:
-  group1:
+# Definition der Gruppen
+gruppen:
+  gruppe1:
     name: "Armorstands und Anzeigen"
     color: "RED"
     entities:
@@ -17,21 +17,92 @@ group:
       - ITEM_DISPLAY
       - ITEM_FRAME
 
-  group2:
+  gruppe2:
     name: "Tiere und Monster"
     color: "GREEN"
     entities:
-      - COW
-      - SHEEP
-      - PIG
+      - ALLAY
+      - AXOLOTL
+      - BAT
+      - BEE
+      - BLAZE
+      - CAMEL
+      - CAT
+      - CAVE_SPIDER
       - CHICKEN
-      - ZOMBIE
-      - SKELETON
+      - COD
+      - COW
       - CREEPER
-      - SPIDER
+      - DOLPHIN
+      - DONKEY
+      - DROWNED
+      - ELDER_GUARDIAN
+      - ENDER_DRAGON
       - ENDERMAN
+      - ENDERMITE
+      - EVOKER
+      - FOX
+      - FROG
+      - GHAST
+      - GIANT
+      - GLOW_SQUID
+      - GOAT
+      - GUARDIAN
+      - HOGLIN
+      - HORSE
+      - HUSK
+      - ILLUSIONER
+      - IRON_GOLEM
+      - LLAMA
+      - MAGMA_CUBE
+      - MOOSHROOM
+      - MULE
+      - OCELOT
+      - PANDA
+      - PARROT
+      - PHANTOM
+      - PIG
+      - PIGLIN
+      - PIGLIN_BRUTE
+      - PILLAGER
+      - POLAR_BEAR
+      - PUFFERFISH
+      - RABBIT
+      - RAVAGER
+      - SALMON
+      - SHEEP
+      - SHULKER
+      - SILVERFISH
+      - SNIFFER
+      - SKELETON
+      - SKELETON_HORSE
+      - SLIME
+      - SNOW_GOLEM
+      - SPIDER
+      - SQUID
+      - STRAY
+      - STRIDER
+      - TADPOLE
+      - TRADER_LLAMA
+      - TROPICAL_FISH
+      - TURTLE
+      - VEX
+      - VILLAGER
+      - VINDICATOR
+      - WANDERING_TRADER
+      - WARDEN
+      - WITCH
+      - WITHER
+      - WITHER_SKELETON
+      - WOLF
+      - ZOGLIN
+      - ZOMBIE
+      - ZOMBIE_HORSE
+      - ZOMBIE_VILLAGER
+      - ZOMBIFIED_PIGLIN
 
-  group3:
+
+  gruppe3:
     name: "Andere Entitys"
     color: "YELLOW"
-    entities: []  # Optional: Define other Entities here
+    entities: []  # Optional: Hier können andere Entities hinzugefügt werden, die nicht zu den ersten beiden Gruppen gehören
