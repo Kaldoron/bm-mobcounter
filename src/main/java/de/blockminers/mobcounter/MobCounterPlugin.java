@@ -135,17 +135,25 @@ public class MobCounterPlugin extends JavaPlugin {
                 mobCounts.put(type, mobCounts.getOrDefault(type, 0) + 1);
             }
             
-           // If no Entities have been found
+           /// Check if no entities were found
             if (mobCounts.isEmpty()) {
-                String noEntitiesMessage = config.getString("no-entities-found",
-                        "No Entities in Radius of %radius%  Blocks could be found..")
-                        .replace("%radius%", String.valueOf(radius));
-                player.sendMessage(ChatColor.RED + noEntitiesMessage);
+                // Fetch the message from the config with a default fallback
+                String rawNoEntitiesMessage = config.getString(
+                        "no-entities-found",
+                        "No Entities in Radius of %radius% Blocks could be found.."
+                );
+
+                // Replace the %radius% placeholder and apply color codes
+                String formattedNoEntitiesMessage = ChatColor.translateAlternateColorCodes('&', rawNoEntitiesMessage.replace("%radius%", String.valueOf(radius)));
+
+                // Send the formatted message to the player
+                player.sendMessage(formattedNoEntitiesMessage);
+
                 return true; // Exit early
             }
 
             // Show header from config with radius 
-            String rawHeaderMessage = config.getString("header", "&6Entity-Counter in Radius of %radius% Blocks:");
+            String rawHeaderMessage = config.getString("header", "Entity-Counter in Radius of %radius% Blocks:");
             String formattedHeaderMessage = ChatColor.translateAlternateColorCodes('&', rawHeaderMessage.replace("%radius%", String.valueOf(radius)));
             player.sendMessage(formattedHeaderMessage); // Send formatted header message
             
